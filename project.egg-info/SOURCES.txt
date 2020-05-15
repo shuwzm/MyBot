@@ -1,0 +1,13 @@
+setup.py
+MyBot/__init__.py
+MyBot/items.py
+MyBot/middlewares.py
+MyBot/pipelines.py
+MyBot/settings.py
+MyBot/spiders/__init__.py
+MyBot/spiders/bot_spider.py
+project.egg-info/PKG-INFO
+project.egg-info/SOURCES.txt
+project.egg-info/dependency_links.txt
+project.egg-info/entry_points.txt
+project.egg-info/top_level.txt
