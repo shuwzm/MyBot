@@ -9,5 +9,5 @@
 class MybotPipeline(object):
     def process_item(self, item, spider):
 
-        #print("Item name is:")
+        print("Item name is:")
         return item
