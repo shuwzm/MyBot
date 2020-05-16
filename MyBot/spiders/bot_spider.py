@@ -44,19 +44,26 @@ class BotSpider(scrapy.Spider):
     #   self.driver.get(response.url)
 
     def parse(self, response):
-        # item = RedwineItem() print(response.text) price = response.xpath('//div[@class="price-box
-        # pricing-lib-price-8-2013-8"]/div/div/div/span[1]/text()').extract_first() name = response.xpath('//div[
-        # @class="item ellipsis"]/text()').extract_first()
+        item = MybotItem()
         self.driver.get(response.url)
 
         name = self.driver.find_element_by_xpath('//*[@class="sku-title"]').text
-        price = self.driver.find_element_by_xpath(
+        currentPrice = self.driver.find_element_by_xpath(
             '//div[@class="price-box pricing-lib-price-8-2013-8"]/div/div/div/span[1]').text
 
-        atc = self.driver.find_element_by_xpath('//*[@class="fulfillment-add-to-cart-button"]/div/button').text
+        isPresent = len(self.driver.find_elements_by_class_name('pricing-price__regular-price'))
+        regularPrice = currentPrice
 
-        print("price is " + str(price))
-        print(atc)
+        if isPresent > 0:
+            regularPrice = self.driver.find_element_by_xpath('//*[@class="pricing-price__regular-price"]').text
+
+
+        status = self.driver.find_element_by_xpath('//*[@class="fulfillment-add-to-cart-button"]/div/button').text
+
+        print("currentPrice is " + str(currentPrice))
+        print("name is " + str(name))
+        print("regularPrice is " + str(regularPrice))
+        print(status)
 
         product = ''
         if 'Nintendo' in name and 'Red' in name:
@@ -78,8 +85,15 @@ class BotSpider(scrapy.Spider):
             # file.write('status: %s \n', atc)
             # file.close()
             file.write('Name is: ' + name + '\n')
-            file.write('The price is ' + str(price) + '\n')
-            file.write('status: ' + atc + '\n')
+            file.write('The price is ' + str(currentPrice) + '\n')
+            file.write('status: ' + status + '\n')
             file.close()
         except IOError as e:
             print("I/O error({0}): {1}".format(e.errno, e.strerror))
+
+        item['name'] = name
+        item['currentPrice'] = currentPrice
+        item['regularPrice'] = regularPrice
+        item['status'] = status
+
+        yield item
