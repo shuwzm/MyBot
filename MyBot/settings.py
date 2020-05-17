@@ -73,9 +73,13 @@ ROBOTSTXT_OBEY = True
 ITEM_PIPELINES = {
     'MyBot.pipelines.MybotPipeline': 100,
     'MyBot.pipelines.JsonWriterPipeline': 300,
+    'MyBot.MongoPipeline.MongoPipeline': 300,
 
 }
-
+MONGODB_URI = "localhost"
+MONGODB_PORT = 27017
+MONGODB_DB = "mybot"
+MONGODB_COLLECTION = "bestbuy"
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
