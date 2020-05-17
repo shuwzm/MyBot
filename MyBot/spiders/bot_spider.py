@@ -7,7 +7,6 @@ from MyBot.items import *
 import time
 from selenium.webdriver.firefox.options import Options
 
-
 class BotSpider(scrapy.Spider):
     name = "bot"
     allowed_domains = ["www.bestbuy.com"]
