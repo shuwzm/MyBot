@@ -11,9 +11,10 @@ import scrapy
 class MybotItem(scrapy.Item):
     # define the fields for your item here like:
 
-    producteName = scrapy.Field()
+    productName = scrapy.Field()
     currentPrice = scrapy.Field()
     url = scrapy.Field()
+    imageUrl = scrapy.Field()
     regularPrice = scrapy.Field()
     discount = scrapy.Field()
     status = scrapy.Field()
