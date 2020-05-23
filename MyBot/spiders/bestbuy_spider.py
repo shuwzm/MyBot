@@ -10,11 +10,12 @@ class bestbuySpider(CrawlSpider):
     item = MybotItem()
     allow_domain = 'www.bestbuy.com'
     base_url = 'https://www.bestbuy.com'
-    start_urls = ['https://www.bestbuy.com/site/searchpage.jsp?st=ps4&_dyncharset=UTF-8&_dynSessConf=&id=pcat17071'
+    start_urls = ['https://www.bestbuy.com/site/searchpage.jsp?st=surface&_dyncharset=UTF-8&_dynSessConf=&id=pcat17071'
                   '&type=page&sc=Global&cp=1&nrp=&sp=&qp=&list=n&af=true&iht=y&usc=All+Categories&ks=960&keys=keys']
 
     def parse(self, response):
         print('this is the first page %s', response.url)
+        numPattern = r'\d+(,)?\d+(\.\d*)?'
 
         raw_items = response.xpath('//*[@class="sku-item"]')
         for ri in raw_items:
@@ -22,7 +23,10 @@ class bestbuySpider(CrawlSpider):
             productName = ri.xpath('.//*[@class="sku-header"]/a/text()').get()
             print(productName)
             currentPrice = ri.xpath('.//*[@class="priceView-hero-price priceView-customer-price"]/span[1]/text()').get()
-            currentPrice = currentPrice.replace('$', '')
+            m = re.search(numPattern, currentPrice)
+            currentPrice = m.group(0)
+            currentPrice = currentPrice.replace(',', '')
+
             savePrice = ri.xpath('.//*[@class="pricing-price__savings"]/text()').get()
             regularPrice = ri.xpath('.//*[@class="pricing-price__regular-price sr-only"]/text()').get()
             url = urljoin(self.base_url, ri.xpath('.//*[@class="image-link"]/@href').get())
@@ -31,13 +35,17 @@ class bestbuySpider(CrawlSpider):
             if savePrice is None:
                 savePrice = 0
             else:
-                m = re.search(r'\d+(\.\d*)?', savePrice)
+                m = re.search(numPattern, savePrice)
                 savePrice = m.group(0)
+                savePrice = savePrice.replace(',', '')
+
             if regularPrice is None:
                 regularPrice = currentPrice
             else:
-                m = re.search(r'\d+(\.\d*)?', regularPrice)
+                m = re.search(numPattern, regularPrice)
                 regularPrice = m.group(0)
+                print('regularPrice:', regularPrice)
+                regularPrice = regularPrice.replace(',', '')
             print('\n')
             regularPrice = float(regularPrice)
             savePrice = float(savePrice)
@@ -48,7 +56,7 @@ class bestbuySpider(CrawlSpider):
                 'imageUrl': imageUrl,
                 'currentPrice': currentPrice,
                 'regularPrice': regularPrice,
-                'discount': "{:.0%}".format(savePrice/regularPrice),
+                'discount': "{:.0%}".format(savePrice / regularPrice),
                 'status': status,
             }
         # item['productName'] = productName
