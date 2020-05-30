@@ -6,6 +6,7 @@
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
 import json
+from scrapy.exporters import JsonItemExporter
 
 class MybotPipeline(object):
     def process_item(self, item, spider):
@@ -23,5 +24,18 @@ class JsonWriterPipeline(object):
 
     def close_spider(self,spider):
         self.file.write("]")
+        self.file.close()
+
+class JsonExportPipeline:
+    def open_spider(self,spider):
+        self.file = open('items.json', 'wb')
+        self.exporter = JsonItemExporter(self.file, encoding = 'utf-8')
+        self.exporter.start_exporting()
+
+    def process_item(self, item, spider):
+        self.exporter.export_item(item)
+
+    def close_spider(self,spider):
+        self.exporter.finish_exporting()
         self.file.close()
 

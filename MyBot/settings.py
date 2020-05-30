@@ -73,8 +73,8 @@ ROBOTSTXT_OBEY = True
 ITEM_PIPELINES = {
     'MyBot.pipelines.MybotPipeline': 100,
     'MyBot.pipelines.JsonWriterPipeline': 300,
-    'MyBot.MongoPipeline.MongoPipeline': 300,
-
+    #'MyBot.MongoPipeline.MongoPipeline': 300,
+    'MyBot.pipelines.JsonExportPipeline': 300,
 }
 MONGODB_URI = "localhost"
 MONGODB_PORT = 27017
